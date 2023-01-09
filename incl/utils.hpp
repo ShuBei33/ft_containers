@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:19 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/10 00:37:04 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/10 00:56:04 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,4 +145,20 @@ namespace ft
 	//std::enable_if
 	template<bool Cond, class T = void> struct enable_if {};
 	template<class T> struct enable_if<true, T> { typedef T type; };
+
+	//std::reverse_iterator
+	template <class Iterator> class reverse_iterator {
+		typedef Iterator iterator_type;
+		typedef iterator_traits<Iterator>::iterator_category iterator_category;
+		typedef iterator_traits<Iterator>::value_type value_type;
+		typedef iterator_traits<Iterator>::difference_type difference_type;
+		typedef iterator_traits<Iterator>::difference_type pointer;
+		typedef iterator_traits<Iterator>::reference reference;
+
+		reverse_iterator();
+		explicit reverse_iterator (iterator_type it);
+		template <class Iter> reverse_iterator (const reverse_iterator<Iter>& rev_it);
+	
+		iterator_type base() const { return }
+	};
 }
