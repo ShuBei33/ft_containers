@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:19 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/11 21:44:42 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/11 22:36:35 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ namespace ft
 	//std::make_pair
 	template< class T1, class T2 >
 		pair< T1,T2 > make_pair (T1 x, T2 y) {
-			return (pair< T1,T2 >(x,y)):
+			return (pair< T1,T2 >(x,y));
 		}
 
 	//std::equal
@@ -92,7 +92,7 @@ namespace ft
 		}
 	//struct parent de std::is_integral
 	template <class T, T v> struct integral_constant {
-		static T value = v;
+		static T const value = v;
 		typedef T value_type;
 		typedef integral_constant<T, v> type;
 		operator T() { return v; }
@@ -119,7 +119,7 @@ namespace ft
 	template<> struct is_integral<wchar_t> : public true_type { };
 
 	//std::iterator_traits
-	template <class Iter> class iterator_traits {
+	template <class Iter> struct iterator_traits {
 		typedef typename Iter::difference_type difference_type;
 		typedef typename Iter::value_type value_type;
 		typedef typename Iter::pointer pointer;
@@ -127,7 +127,7 @@ namespace ft
 		typedef typename Iter::iterator_category iterator_category;
 	};
 	
-	template <class T> class iterator_traits<T*> {
+	template <class T> struct iterator_traits<T*> {
 		typedef std::ptrdiff_t difference_type;
 		typedef T value_type;
 		typedef T* pointer;
@@ -135,7 +135,7 @@ namespace ft
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
-	template <class T> class iterator_traits<const T*> {
+	template <class T> struct iterator_traits<const T*> {
 		typedef std::ptrdiff_t difference_type;
 		typedef T value_type;
 		typedef const T* pointer;
@@ -157,10 +157,10 @@ namespace ft
 			typedef typename iterator_traits<Iterator>::difference_type pointer;
 			typedef typename iterator_traits<Iterator>::reference reference;
 
-			reverse_iterator();
-			explicit reverse_iterator (iterator_type it);
-			template <class Iter> reverse_iterator (const reverse_iterator<Iter>& rev_it);
-			~reverse_iterator();
+			reverse_iterator() { }
+			explicit reverse_iterator (iterator_type it) { this->it = it; }
+			template <class Iter> reverse_iterator (const reverse_iterator<Iter>& rev_it) { this->it = rev_it.base(); }
+			~reverse_iterator() { };
 			
 			iterator_type base() const { return this->it; }
 
