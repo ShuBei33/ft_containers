@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 22:16:38 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/11 23:47:09 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/17 19:10:32 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,9 @@ int	main() {
 	// ft::is_integral<int*>::value;
 	std::cout << std::boolalpha << "answer is " << ft::is_integral<int>::value << std::endl;
 	// std::cout << "answer is " << *(ben + 2) << std::endl;
+
+	int a;
+
+	a = int(123);
 	return 0;
 }

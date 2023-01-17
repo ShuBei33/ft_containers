@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:15 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/12 04:19:04 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/17 19:04:12 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ namespace ft {
 				friend bool operator>=(const stack<_T,_Container>& lhs, const stack<_T,_Container>& rhs);
 	
 		protected:
-			Container c;
+			Container	c;
 
 	};
 
