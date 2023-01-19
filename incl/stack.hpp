@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:15 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/17 19:04:12 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/18 20:11:25 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ namespace ft {
 			const value_type& top() const {
 				return c.back();
 			}
-			void push (const value_type& val) {
+			void push(const value_type& val) {
 				c.push_back(val);
 			}
 			void pop() {
