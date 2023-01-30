@@ -6,12 +6,13 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/19 20:30:30 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/30 14:35:11 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <vector>
+#include <stdexcept>
 #include "utils.hpp"
 
 namespace ft {
@@ -33,19 +34,32 @@ namespace ft {
 			explicit vector(const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {}
 			explicit vector(size_type n, const value_type& val = value_type(),const allocator_type& alloc = allocator_type())
-				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {}
-			template<class InputIterator> vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type())
-				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {}
+				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {
+					_ptr = _alloc.allocate(n);
+					for (size_type i = 0; i != n; ++i)
+						_alloc.construct(_ptr+i, val);
+				}
+			template<class InputIterator>
+			vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type())
+				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {
+					for (InputIterator it = first; it != last; ++it)
+						this->push_back(*it);
+				}
 			vector(const vector& x)
 				: _alloc(x._alloc), _ptr(NULL), _size(0), _capacity(0) {}
 			vector& operator=(const vector& x) {
 				this->_alloc = x._alloc;
-				this->_ptr = x._ptr;
 				this->_size = x._size;
+				this->_ptr = _alloc.allocate(x._capacity);
+				for (size_type i = 0; i != x._size; ++i)
+					_alloc.construct(_ptr+i, x._ptr+i);
 				this->_capacity = x._capacity;
 				return *this;
 			}
-			~vector() {}
+			~vector() {
+				clear();
+				_alloc.deallocate(_ptr, _capacity);
+			}
 
 
 	//---------------------------------------- ITERATORS ----------------------------------------//
@@ -87,8 +101,9 @@ namespace ft {
 				return _alloc.max_size();
 			}
 			void resize(size_type n, value_type val = value_type()) { //TODO
-				if (n < _size)
-					_size = n;
+				if (n < _size) {
+					
+				}
 				while (n>_size && n<=_capacity)
 					++_size;
 				
@@ -97,7 +112,7 @@ namespace ft {
 				return _capacity;
 			}
 			bool empty() const {
-				return _size==0 || _size!=0;
+				return _size==0;
 			}
 			void reserve(size_type n) { //TODO
 				if (n > _capacity)
@@ -115,33 +130,67 @@ namespace ft {
 				return _ptr[n];
 			}
 			reference at(size_type n) {
-				
+				if (n >= _size)
+					throw std::out_of_range();
+				return _ptr[n];
 			}
 			const_reference at(size_type n) const {
-				
+				if (n >= _size)
+					throw std::out_of_range();
+				return _ptr[n];
 			}
 			reference front() {
-				return reference(begin());
+				return *begin();
 			}
 			const_reference front() const {
-				return const_reference(begin());
+				return *begin();
 			}
 			reference back() {
-				return reference(end());
+				return *rend();
 			}
 			const_reference back() const {
-				return const_reference(end());
+				return *rend();
 			}
 
 
 	//--------------------------------------- MODIFIERS -----------------------------------------//
 
 
-			template<class InputIterator>void assign(InputIterator first, InputIterator last) {
+			template<class InputIterator>
+			void assign(InputIterator first, InputIterator last) {
 				
 			}
 			void assign(size_type n, const value_type& val) {
 				
+			}
+			void push_back(value_type const& val) {
+				
+			}
+			void pop_back() {
+				_alloc.destroy(back());
+				_alloc.deallocate(end(), 1);
+			}
+			iterator insert(iterator position, const value_type& val) {
+				
+			}
+			void insert(iterator position, size_type n, const value_type& val) {
+				
+			}
+			template <class InputIterator>
+			void insert(iterator position, InputIterator first, InputIterator last) {
+				
+			}
+			iterator erase (iterator position) {
+				
+			}
+			iterator erase (iterator first, iterator last) {
+				
+			}
+			void swap (vector& x) {
+				
+			}
+			void clear() {
+				for (size_type i = 0; )
 			}
 
 
@@ -154,4 +203,33 @@ namespace ft {
 			size_type		_size;
 			size_type		_capacity;
 	};
+
+
+	//---------------------------------------- OVERLAY ------------------------------------------//
+
+
+	template <class T, class Alloc>
+	bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc==rhs._alloc;
+	}
+	template <class T, class Alloc>
+	bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc!=rhs._alloc;
+	}
+	template <class T, class Alloc>
+	bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc<rhs._alloc;
+	}
+	template <class T, class Alloc>
+	bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc<=rhs._alloc;
+	}
+	template <class T, class Alloc>
+	bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc>rhs._alloc;
+	}
+	template <class T, class Alloc>
+	bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		return lhs._alloc<=rhs._alloc;
+	}
 }
