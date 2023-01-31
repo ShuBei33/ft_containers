@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/30 14:35:11 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/01/31 20:25:31 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,10 @@ namespace ft {
 				return _size==0;
 			}
 			void reserve(size_type n) { //TODO
-				if (n > _capacity)
-					_alloc.allocate(n);
+				if (_capacity > n)
+					return ;
+				pointer tmp = _alloc.allocate(n);
+				for ()
 			}
 
 
@@ -168,7 +170,7 @@ namespace ft {
 			}
 			void pop_back() {
 				_alloc.destroy(back());
-				_alloc.deallocate(end(), 1);
+				--_size;
 			}
 			iterator insert(iterator position, const value_type& val) {
 				
@@ -181,6 +183,7 @@ namespace ft {
 				
 			}
 			iterator erase (iterator position) {
+				_alloc.destroy(position);
 				
 			}
 			iterator erase (iterator first, iterator last) {
@@ -190,7 +193,11 @@ namespace ft {
 				
 			}
 			void clear() {
-				for (size_type i = 0; )
+				while (!this->empty())
+					this->pop_back();
+			}
+			allocator_type get_allocator() const {
+				return _alloc;
 			}
 
 
@@ -210,26 +217,36 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc==rhs._alloc;
+		return lhs.size()==rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 	}
 	template <class T, class Alloc>
 	bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc!=rhs._alloc;
+		return !(lhs==rhs);
 	}
 	template <class T, class Alloc>
 	bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc<rhs._alloc;
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 	template <class T, class Alloc>
 	bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc<=rhs._alloc;
+		return !(rhs<lhs);
 	}
 	template <class T, class Alloc>
 	bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc>rhs._alloc;
+		return rhs<lhs;
 	}
 	template <class T, class Alloc>
 	bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return lhs._alloc<=rhs._alloc;
+		return !(lhs<rhs);
+	}
+
+
+	//----------------------------------------- OTHER -------------------------------------------//
+
+
+	//std::swap (vector)
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) {
+		x.swap(y);
 	}
 }
