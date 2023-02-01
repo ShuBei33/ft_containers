@@ -6,13 +6,14 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/31 20:25:31 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/01 22:03:13 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 #include "utils.hpp"
 
 namespace ft {
@@ -169,6 +170,8 @@ namespace ft {
 				
 			}
 			void pop_back() {
+				if (this->empty())
+					return ;
 				_alloc.destroy(back());
 				--_size;
 			}
@@ -183,6 +186,10 @@ namespace ft {
 				
 			}
 			iterator erase (iterator position) {
+				if (position = this->end()) {
+					this->pop_back();
+					return position;
+				}
 				_alloc.destroy(position);
 				
 			}
@@ -190,7 +197,10 @@ namespace ft {
 				
 			}
 			void swap (vector& x) {
-				
+				std::swap(this->_alloc, _alloc.x);
+				std::swap(this->_ptr, _ptr.x);
+				std::swap(this->_size, _size.x);
+				std::swap(this->_capacity, _capacity.x);
 			}
 			void clear() {
 				while (!this->empty())
