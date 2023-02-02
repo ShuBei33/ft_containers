@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/01 22:03:13 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/02 20:13:49 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ namespace ft {
 				this->_alloc = x._alloc;
 				this->_size = x._size;
 				this->_ptr = _alloc.allocate(x._capacity);
-				for (size_type i = 0; i != x._size; ++i)
-					_alloc.construct(_ptr+i, x._ptr+i);
+				for (size_type i = 0; i < x._size; ++i)
+					_alloc.construct(_ptr+i, x._ptr[i]);
 				this->_capacity = x._capacity;
 				return *this;
 			}
@@ -115,11 +115,20 @@ namespace ft {
 			bool empty() const {
 				return _size==0;
 			}
-			void reserve(size_type n) { //TODO
+			void reserve(size_type n) {
+				if (n > this->max_size())
+					throw std::length_error();
 				if (_capacity > n)
 					return ;
 				pointer tmp = _alloc.allocate(n);
-				for ()
+				for (size_type i = 0; i < _size; ++i) {
+					_alloc.construct(tmp+i, _ptr[i]);
+					_alloc.destroy(_ptr+i);
+				}
+				if (_capacity)
+					_alloc.deallocate(_ptr, _capacity);
+				_ptr = tmp;
+				_capacity = n;
 			}
 
 
