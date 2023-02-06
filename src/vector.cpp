@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:36 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/03 16:37:42 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/04 23:58:46 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,10 @@
 
 int	main()
 {
+	ft::vector<int> vivi(10, 8);
+	int	tab[5] = {8,1,-12,0,33};
+
+	ft::vector<int> bobo(tab, tab+5);
+	
 	return 0;
 }

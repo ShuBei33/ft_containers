@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/02 20:13:49 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/06 23:50:05 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,11 @@ namespace ft {
 						_alloc.construct(_ptr+i, val);
 				}
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type())
+			vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type(),
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {
+					_capacity = last - first;
+					_ptr = _alloc.allocate(_capacity);
 					for (InputIterator it = first; it != last; ++it)
 						this->push_back(*it);
 				}
@@ -101,13 +104,13 @@ namespace ft {
 			size_type max_size() const {
 				return _alloc.max_size();
 			}
-			void resize(size_type n, value_type val = value_type()) { //TODO
-				if (n < _size) {
-					
-				}
-				while (n>_size && n<=_capacity)
-					++_size;
-				
+			void resize(size_type n, value_type val = value_type()) {
+				if (n > _capacity)
+					this->reserve(n);
+				while (n < _size)
+					this->push_back(val);
+				while (_size > n)
+					this->pop_back();
 			}
 			size_type capacity() const {
 				return _capacity;
@@ -117,8 +120,8 @@ namespace ft {
 			}
 			void reserve(size_type n) {
 				if (n > this->max_size())
-					throw std::length_error();
-				if (_capacity > n)
+					throw std::length_error("vector::reserve");
+				if (_capacity >= n)
 					return ;
 				pointer tmp = _alloc.allocate(n);
 				for (size_type i = 0; i < _size; ++i) {
@@ -143,12 +146,12 @@ namespace ft {
 			}
 			reference at(size_type n) {
 				if (n >= _size)
-					throw std::out_of_range();
+					throw std::out_of_range("vector::at");
 				return _ptr[n];
 			}
 			const_reference at(size_type n) const {
 				if (n >= _size)
-					throw std::out_of_range();
+					throw std::out_of_range("vector::at");
 				return _ptr[n];
 			}
 			reference front() {
@@ -169,20 +172,27 @@ namespace ft {
 
 
 			template<class InputIterator>
-			void assign(InputIterator first, InputIterator last) {
-				
+			void assign(InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
+				this->clear();
+				for (InputIterator it = first; it != last; ++it)
+					this->push_back(*it);
 			}
 			void assign(size_type n, const value_type& val) {
-				
+				this->clear();
+				for (size_type i = 0; i < n; ++i)
+					this->push_back(val);
 			}
 			void push_back(value_type const& val) {
-				
+				if (!is_available())
+					(_capacity ? reserve(_capacity<<1) : reserve(1)); //x2 binary
+				_alloc.construct(_ptr+_size, val);
+				++_size;
 			}
 			void pop_back() {
 				if (this->empty())
 					return ;
-				_alloc.destroy(back());
-				--_size;
+				_alloc.destroy(_ptr+(--_size));
 			}
 			iterator insert(iterator position, const value_type& val) {
 				
@@ -191,11 +201,12 @@ namespace ft {
 				
 			}
 			template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last) {
+			void insert(iterator position, InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
 				
 			}
 			iterator erase (iterator position) {
-				if (position = this->end()) {
+				if (position == this->end()) {
 					this->pop_back();
 					return position;
 				}
@@ -228,6 +239,10 @@ namespace ft {
 			pointer			_ptr;
 			size_type		_size;
 			size_type		_capacity;
+
+			size_type is_available() {
+				return _capacity-_size;
+			}
 	};
 
 

@@ -6,7 +6,7 @@
 #    By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 14:07:13 by estoffel          #+#    #+#              #
-#    Updated: 2023/01/03 16:33:48 by estoffel         ###   ########.fr        #
+#    Updated: 2023/02/07 00:12:19 by estoffel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME	=	containers
 
 CC		=	c++
 
-FLAGS	=	-Wall -Wextra -Werror -Iincl -g3 -MMD -MP -std=c++98
+FLAGS	=	-Wall -Wextra -Werror -Wno-unused -Wno-unused-variable -Wno-unused-parameter -Iincl -g3 -MMD -MP -std=c++98
 
 SRC		+=	map.cpp
 SRC		+=	stack.cpp
@@ -47,13 +47,13 @@ $(NAME): $(OBJ)
 	@printf "\n"
 
 clean:
-	$(RM) obj/
+	rm -rf obj/
 	@printf "\n"
 	@printf "💧\033[1;97m E V E R Y T H I N G  I S  C L E A N E D 💧\e[0m\n"
 	@printf "\n"
 
 fclean:
-	$(RM) obj/
+	rm -rf obj/
 	$(RM) $(NAME)
 	@printf "\n"
 	@printf "💧\033[1;97m E V E R Y T H I N G  I S  C L E A N E D 💧\e[0m\n"

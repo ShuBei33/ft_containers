@@ -6,13 +6,13 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:25 by estoffel          #+#    #+#             */
-/*   Updated: 2023/01/03 16:38:00 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/05 01:56:16 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.hpp"
 
-int	main()
-{
-	return 0;
-}
+// int	main()
+// {
+// 	return 0;
+// }
