@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/08 01:46:59 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/09 00:02:48 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,24 +235,48 @@ namespace ft {
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
-				
+				size_type len = last - first;
+				if (is_available() < len)
+					reserve((_capacity<<1) + len);
+				for (iterator it = (end()-1); it >= pos; --it) {
+					_alloc.construct(it+len, *it);
+					_alloc.destroy(it);
+				}
+				for (; first != last; ++first)
+					_alloc.construct(first, *first);
+				_size += len;
 			}
 			iterator erase (iterator pos) {
 				if (pos == end()) {
 					pop_back();
 					return pos;
 				}
-				_alloc.destroy(pos);
-				
+				for (iterator it = pos; it <= end(); ++it) {
+					_alloc.destroy(it);
+					_alloc.construct(it, *(it+1));
+				}
+				_alloc.destroy(end());
+				--_size;
+				return pos;
 			}
 			iterator erase (iterator first, iterator last) {
-				
+				size_type len = last - first;
+				pointer ret = first;
+				pointer pos = first;
+				for (; first != last; ++first)
+					_alloc.destroy(++first);
+				for (iterator it = last; it <= end(); ++it) {
+					_alloc.construct(++pos, *(it+1));
+					_alloc.destroy(it);
+				}
+				_size -= len;
+				return ret;
 			}
 			void swap (vector& x) {
-				std::swap(this->_alloc, _alloc.x);
-				std::swap(this->_ptr, _ptr.x);
-				std::swap(this->_size, _size.x);
-				std::swap(this->_capacity, _capacity.x);
+				std::swap(this->_alloc, x._alloc);
+				std::swap(this->_ptr, x._ptr);
+				std::swap(this->_size, x._size);
+				std::swap(this->_capacity, x._capacity);
 			}
 			void clear() {
 				if (!_ptr)
