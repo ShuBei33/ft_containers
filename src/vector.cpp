@@ -6,13 +6,11 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:36 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/08 00:05:43 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/08 01:45:42 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.hpp"
-//#define STD
-
 
 #ifdef STD
 #define NS std
@@ -25,10 +23,10 @@ void debug(const NS::vector<T>& v) {
 	for (typename NS::vector<T>::size_type i = 0; i < v.size(); ++i) {
 		std::cout << v[i] << std::endl;
 	}
-	std::cout << v.size() << std::endl;
-	std::cout << v.capacity() << std::endl;
-	std::cout << v.empty() << std::endl;
-	std::cout << v.max_size() << std::endl;
+	std::cout << "size: " << v.size() << std::endl;
+	std::cout << "capacity: " << v.capacity() << std::endl;
+	std::cout << "empty: " << v.empty() << std::endl;
+	std::cout << "max_size: " << v.max_size() << std::endl;
 }
 
 
@@ -41,10 +39,11 @@ int	main()
 
 	
 	NS::vector<int>::iterator it = v.begin();
+	it+=v.size();
 	
 
 	debug(v);
-	v.insert(it, 666);
+	v.insert(it, 3, 666);
 	debug(v);
 
 

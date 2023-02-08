@@ -6,7 +6,7 @@
 #    By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 14:07:13 by estoffel          #+#    #+#              #
-#    Updated: 2023/02/07 23:59:20 by estoffel         ###   ########.fr        #
+#    Updated: 2023/02/08 01:36:56 by estoffel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ NAME	=	containers
 CC		=	c++
 
 FLAGS	=	-Wall -Wextra -Werror -Wno-unused -Wno-unused-variable -Wno-unused-parameter -Iincl -g3 -MMD -MP -std=c++98
+
+DEFINE ?=
 
 SRC		+=	map.cpp
 SRC		+=	stack.cpp
@@ -28,11 +30,14 @@ RM		=	rm -f
 
 all: $(NAME)
 
+test:
+	./test.zsh
+
 -include $(DEP)
 
 ./obj/%.o: ./src/%.cpp
 	@mkdir -p $(@D)
-	$(CC) $(FLAGS) -o $@ -c $<
+	$(CC) $(FLAGS) $(DEFINE) -o $@ -c $<
 
 $(NAME): $(OBJ)
 	$(CC) -o $(NAME) $(OBJ)
@@ -61,4 +66,4 @@ fclean:
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test

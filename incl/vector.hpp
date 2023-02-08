@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/07 23:53:32 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/08 01:46:59 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,27 +201,36 @@ namespace ft {
 			}
 			iterator insert(iterator pos, const value_type& val) {
 				if (!is_available())
-					reserve(_capacity<<1);
-				for (iterator it = end() - 1; it >= pos; --it) {
-					*(it+1) = *(it);
+					(_capacity ? reserve(_capacity<<1) : reserve(1));
+				for (iterator it = (end()-1); it >= pos; --it) {
+					_alloc.construct(it+1, *it);
+					_alloc.destroy(it);
 				}
-				*pos = val;
+				_alloc.construct(pos, val);
 				++_size;
 				return pos;
 			}
-			void print(void) {
-				for (size_type x = 0; x < _size; ++x) {
-					std::cout << _ptr[x] << std::endl;
-				}
-				std::cout << std::endl;
-			}
-			void debug(void) {
-				std::cout << "size : " << _size << '\n';
-				std::cout << "capacity : " << _capacity << '\n';
-				std::cout << std::endl;
-			}
+			// void print(void) {
+			// 	for (size_type x = 0; x < _size; ++x) {
+			// 		std::cout << _ptr[x] << std::endl;
+			// 	}
+			// 	std::cout << std::endl;
+			// }
+			// void debug(void) {
+			// 	std::cout << "size : " << _size << '\n';
+			// 	std::cout << "capacity : " << _capacity << '\n';
+			// 	std::cout << std::endl;
+			// }
 			void insert(iterator pos, size_type n, const value_type& val) {
-				
+				if (is_available() < n)
+					reserve((_capacity<<1) + n);
+				for (iterator it = (end()-1); it >= pos; --it) {
+					_alloc.construct(it+n, *it);
+					_alloc.destroy(it);
+				}
+				for (size_type i = 0; i < n; ++i)
+					_alloc.construct(pos++, val);
+				_size += n;
 			}
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
