@@ -14,7 +14,7 @@ include_path="../incl/"
 srcs="srcs"
 
 CC="clang++"
-CFLAGS="-Wall -Wextra -Werror -std=c++98"
+CFLAGS="-Wall -Wextra -Werror -g3 -std=c++98"
 # CFLAGS+=" -fsanitize=address -g3"
 
 ft_compile_output="/dev/null"

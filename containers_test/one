@@ -10,4 +10,4 @@ testedNamespace=$([[ -z "$2" ]] && echo "ft" || echo "$2")
 output_file="a.out"
 
 compile "$1" "${testedNamespace}" "${output_file}" && \
-	./${output_file}
+	valgrind ./${output_file}

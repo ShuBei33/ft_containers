@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/09 00:02:48 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/14 06:14:10 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,18 @@ namespace ft {
 				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {}
 			explicit vector(size_type n, const value_type& val = value_type(),const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {
-					_ptr = _alloc.allocate(n);
-					for (size_type i = 0; i != n; ++i)
-						_alloc.construct(_ptr+i, val);
+					this->assign(n, val);
 				}
 			template<class InputIterator>
 			vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				: _alloc(alloc), _ptr(NULL), _size(0), _capacity(0) {
-					_capacity = last - first;
-					_ptr = _alloc.allocate(_capacity);
-					for (InputIterator it = first; it != last; ++it)
-						this->push_back(*it);
+					this->assign(first, last);
 				}
 			vector(const vector& x)
-				: _alloc(x._alloc), _ptr(NULL), _size(0), _capacity(0) {}
+				: _alloc(x._alloc), _ptr(NULL), _size(0), _capacity(0) {
+					this->assign(x.begin(), x.end());
+				}
 			vector& operator=(const vector& x) {
 				if (_ptr) {
 					clear();
@@ -110,9 +107,8 @@ namespace ft {
 				return _alloc.max_size();
 			}
 			void resize(size_type n, value_type val = value_type()) {
-				if (n > _capacity)
-					reserve(n);
-				while (n < _size)
+				reserve(n);
+				while (n > _size)
 					push_back(val);
 				while (_size > n)
 					pop_back();
@@ -133,8 +129,7 @@ namespace ft {
 					_alloc.construct(tmp+i, _ptr[i]);
 					_alloc.destroy(_ptr+i);
 				}
-				if (_capacity)
-					_alloc.deallocate(_ptr, _capacity);
+				_alloc.deallocate(_ptr, _capacity);
 				_ptr = tmp;
 				_capacity = n;
 			}
@@ -151,12 +146,12 @@ namespace ft {
 			}
 			reference at(size_type n) {
 				if (n >= _size)
-					throw std::out_of_range("vector::at");
+					throw std::out_of_range("ft::vector::at");
 				return _ptr[n];
 			}
 			const_reference at(size_type n) const {
 				if (n >= _size)
-					throw std::out_of_range("vector::at");
+					throw std::out_of_range("ft::vector::at");
 				return _ptr[n];
 			}
 			reference front() {
@@ -166,10 +161,10 @@ namespace ft {
 				return *begin();
 			}
 			reference back() {
-				return *rend();
+				return *rbegin();
 			}
 			const_reference back() const {
-				return *rend();
+				return *rbegin();
 			}
 
 
@@ -204,7 +199,7 @@ namespace ft {
 					(_capacity ? reserve(_capacity<<1) : reserve(1));
 				for (iterator it = (end()-1); it >= pos; --it) {
 					_alloc.construct(it+1, *it);
-					_alloc.destroy(it);
+					_alloc.destroy(&(*it));
 				}
 				_alloc.construct(pos, val);
 				++_size;
@@ -225,8 +220,8 @@ namespace ft {
 				if (is_available() < n)
 					reserve((_capacity<<1) + n);
 				for (iterator it = (end()-1); it >= pos; --it) {
-					_alloc.construct(it+n, *it);
-					_alloc.destroy(it);
+					_alloc.construct(&(*(it+n)), *it);
+					_alloc.destroy(&(*it));
 				}
 				for (size_type i = 0; i < n; ++i)
 					_alloc.construct(pos++, val);
@@ -235,15 +230,15 @@ namespace ft {
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
-				size_type len = last - first;
+				size_type len = std::distance(this->begin(), this->end());
 				if (is_available() < len)
 					reserve((_capacity<<1) + len);
 				for (iterator it = (end()-1); it >= pos; --it) {
-					_alloc.construct(it+len, *it);
-					_alloc.destroy(it);
+					_alloc.construct(&(*(it+len)), *it);
+					_alloc.destroy(&(*it));
 				}
-				for (; first != last; ++first)
-					_alloc.construct(first, *first);
+				for (InputIterator it = first; it != last; ++it)
+					_alloc.construct(&(*it), *it);
 				_size += len;
 			}
 			iterator erase (iterator pos) {
@@ -252,22 +247,22 @@ namespace ft {
 					return pos;
 				}
 				for (iterator it = pos; it <= end(); ++it) {
-					_alloc.destroy(it);
-					_alloc.construct(it, *(it+1));
+					_alloc.destroy(&(*it));
+					_alloc.construct(&(*it), *(it+1));
 				}
 				_alloc.destroy(end());
 				--_size;
 				return pos;
 			}
 			iterator erase (iterator first, iterator last) {
-				size_type len = last - first;
+				size_type len = std::distance(this->begin(), this->end());
 				pointer ret = first;
 				pointer pos = first;
 				for (; first != last; ++first)
 					_alloc.destroy(++first);
 				for (iterator it = last; it <= end(); ++it) {
 					_alloc.construct(++pos, *(it+1));
-					_alloc.destroy(it);
+					_alloc.destroy(&(*it));
 				}
 				_size -= len;
 				return ret;
