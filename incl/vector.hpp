@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/14 06:14:10 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/21 05:19:58 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,8 @@ namespace ft {
 					this->assign(x.begin(), x.end());
 				}
 			vector& operator=(const vector& x) {
-				if (_ptr) {
-					clear();
-					_alloc.deallocate(_ptr, _capacity);
-				}
-				this->_alloc = x._alloc;
-				this->_size = x._size;
-				this->_ptr = _alloc.allocate(x._size);
-				for (size_type i = 0; i < x._size; ++i)
-					_alloc.construct(_ptr+i, x._ptr[i]);
-				this->_capacity = x._size;
+				if (&x != this)
+					this->assign(x.begin(), x.end());
 				return *this;
 			}
 			~vector() {
@@ -167,7 +159,6 @@ namespace ft {
 				return *rbegin();
 			}
 
-
 	//--------------------------------------- MODIFIERS -----------------------------------------//
 
 
@@ -205,17 +196,6 @@ namespace ft {
 				++_size;
 				return pos;
 			}
-			// void print(void) {
-			// 	for (size_type x = 0; x < _size; ++x) {
-			// 		std::cout << _ptr[x] << std::endl;
-			// 	}
-			// 	std::cout << std::endl;
-			// }
-			// void debug(void) {
-			// 	std::cout << "size : " << _size << '\n';
-			// 	std::cout << "capacity : " << _capacity << '\n';
-			// 	std::cout << std::endl;
-			// }
 			void insert(iterator pos, size_type n, const value_type& val) {
 				if (is_available() < n)
 					reserve((_capacity<<1) + n);
@@ -242,26 +222,25 @@ namespace ft {
 				_size += len;
 			}
 			iterator erase (iterator pos) {
-				if (pos == end()) {
-					pop_back();
-					return pos;
-				}
-				for (iterator it = pos; it <= end(); ++it) {
-					_alloc.destroy(&(*it));
+				iterator it = begin();
+				while (it != pos)
+					++it;
+				_alloc.destroy(&(*it));
+				for (; it + 1 != end(); ++it) {
 					_alloc.construct(&(*it), *(it+1));
 				}
-				_alloc.destroy(end());
+				_alloc.destroy(end()-1);
 				--_size;
 				return pos;
 			}
 			iterator erase (iterator first, iterator last) {
-				size_type len = std::distance(this->begin(), this->end());
+				size_type len = std::distance(first, last);
 				pointer ret = first;
 				pointer pos = first;
 				for (; first != last; ++first)
-					_alloc.destroy(++first);
-				for (iterator it = last; it <= end(); ++it) {
-					_alloc.construct(++pos, *(it+1));
+					_alloc.destroy(&(*first));
+				for (iterator it = last; it != end(); ++it) {
+					_alloc.construct(&(*pos++), *(it));
 					_alloc.destroy(&(*it));
 				}
 				_size -= len;
