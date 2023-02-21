@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/21 05:19:58 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/21 08:56:53 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,22 +181,17 @@ namespace ft {
 				++_size;
 			}
 			void pop_back() {
-				if (empty())
+				if (_size == 0)
 					return ;
 				_alloc.destroy(_ptr+(--_size));
 			}
 			iterator insert(iterator pos, const value_type& val) {
-				if (!is_available())
-					(_capacity ? reserve(_capacity<<1) : reserve(1));
-				for (iterator it = (end()-1); it >= pos; --it) {
-					_alloc.construct(it+1, *it);
-					_alloc.destroy(&(*it));
-				}
-				_alloc.construct(pos, val);
-				++_size;
+				insert(pos, 1, val);
 				return pos;
 			}
 			void insert(iterator pos, size_type n, const value_type& val) {
+				if (!is_available() && !_capacity)
+					reserve(1);
 				if (is_available() < n)
 					reserve((_capacity<<1) + n);
 				for (iterator it = (end()-1); it >= pos; --it) {
@@ -210,7 +205,7 @@ namespace ft {
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
-				size_type len = std::distance(this->begin(), this->end());
+				size_type len = std::distance(first, last);
 				if (is_available() < len)
 					reserve((_capacity<<1) + len);
 				for (iterator it = (end()-1); it >= pos; --it) {
