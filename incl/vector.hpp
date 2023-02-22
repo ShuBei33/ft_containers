@@ -6,11 +6,13 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/21 08:56:53 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/22 20:09:52 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#define HINT(what) std::cout << "\x1b[32m" << what << "\x1b[0m" << std::endl
+
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
@@ -121,7 +123,9 @@ namespace ft {
 					_alloc.construct(tmp+i, _ptr[i]);
 					_alloc.destroy(_ptr+i);
 				}
-				_alloc.deallocate(_ptr, _capacity);
+				if (_ptr) {
+					_alloc.deallocate(_ptr, _capacity);
+				}
 				_ptr = tmp;
 				_capacity = n;
 			}
@@ -189,19 +193,40 @@ namespace ft {
 				insert(pos, 1, val);
 				return pos;
 			}
+			
 			void insert(iterator pos, size_type n, const value_type& val) {
-				if (!is_available() && !_capacity)
+				size_type pst = pos - begin();
+				if (!n) return;
+				
+				if (!_capacity)
 					reserve(1);
-				if (is_available() < n)
-					reserve((_capacity<<1) + n);
-				for (iterator it = (end()-1); it >= pos; --it) {
-					_alloc.construct(&(*(it+n)), *it);
-					_alloc.destroy(&(*it));
+				
+				if (is_available() < n) {
+					reserve(_capacity<<1);
 				}
+				
+				// for (iterator it = (end()-1); it >= pos; --it) {
+				// 	HINT("yolo");
+				// 	_alloc.construct(&(*(it+n)), *it);
+				// 	_alloc.destroy(&(*it));
+				// }
+				// pointer tmp = _ptr+pst;
+				// for (size_type i = 0; i < n; ++i) {
+				// 	HINT("yolo2");
+				// 	_alloc.construct(tmp+i, val);
+					
+				// }
+				for (size_type i = _size; i > pst; --i) {
+					_alloc.construct(_ptr+i+n-1, _ptr[i-1]);
+					_alloc.destroy(_ptr+i-1);
+					HINT(i);
+				}
+				pointer tmp = _ptr+pst;
 				for (size_type i = 0; i < n; ++i)
-					_alloc.construct(pos++, val);
+					_alloc.construct(tmp+i, val);
 				_size += n;
 			}
+			
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
