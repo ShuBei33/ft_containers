@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/22 20:09:52 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/23 18:51:33 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,14 +196,12 @@ namespace ft {
 			
 			void insert(iterator pos, size_type n, const value_type& val) {
 				size_type pst = pos - begin();
-				if (!n) return;
-				
+				if (!n)
+					return;
 				if (!_capacity)
 					reserve(1);
-				
-				if (is_available() < n) {
+				if (is_available() < n)
 					reserve(_capacity<<1);
-				}
 				
 				// for (iterator it = (end()-1); it >= pos; --it) {
 				// 	HINT("yolo");
