@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/23 18:51:33 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/26 02:37:58 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ namespace ft {
 			}
 			~vector() {
 				clear();
-				_alloc.deallocate(_ptr, _capacity);
+				if (_capacity)
+					_alloc.deallocate(_ptr, _capacity);
 			}
 
 
@@ -190,56 +191,57 @@ namespace ft {
 				_alloc.destroy(_ptr+(--_size));
 			}
 			iterator insert(iterator pos, const value_type& val) {
+				size_type i = pos - begin();
+				// std::cerr << "I = " << i << std::endl;
 				insert(pos, 1, val);
-				return pos;
+				return (iterator(_ptr+i));
 			}
-			
+
+		private:
+			void grow_capacity(size_type n) {
+				size_type new_size = _size + n;
+				size_type realloc_size = 0;
+				if (n == 1)
+					realloc_size = _capacity << 1;
+				else
+					realloc_size = _size << 1;
+				if (new_size > realloc_size)
+					reserve(new_size);
+				else
+					reserve(realloc_size);
+			}
+
+		public:
 			void insert(iterator pos, size_type n, const value_type& val) {
 				size_type pst = pos - begin();
 				if (!n)
-					return;
-				if (!_capacity)
-					reserve(1);
+					return ;
 				if (is_available() < n)
-					reserve(_capacity<<1);
-				
-				// for (iterator it = (end()-1); it >= pos; --it) {
-				// 	HINT("yolo");
-				// 	_alloc.construct(&(*(it+n)), *it);
-				// 	_alloc.destroy(&(*it));
-				// }
-				// pointer tmp = _ptr+pst;
-				// for (size_type i = 0; i < n; ++i) {
-				// 	HINT("yolo2");
-				// 	_alloc.construct(tmp+i, val);
-					
-				// }
+					grow_capacity(n);
 				for (size_type i = _size; i > pst; --i) {
 					_alloc.construct(_ptr+i+n-1, _ptr[i-1]);
 					_alloc.destroy(_ptr+i-1);
-					HINT(i);
 				}
 				pointer tmp = _ptr+pst;
-				for (size_type i = 0; i < n; ++i)
+				for (size_type i = 0; i < n; ++i) {
 					_alloc.construct(tmp+i, val);
+				}
 				_size += n;
 			}
-			
 			template <class InputIterator>
 			void insert(iterator pos, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
-				size_type len = std::distance(first, last);
-				if (is_available() < len)
-					reserve((_capacity<<1) + len);
-				for (iterator it = (end()-1); it >= pos; --it) {
-					_alloc.construct(&(*(it+len)), *it);
-					_alloc.destroy(&(*it));
+				vector tmp(pos, end());
+				_size -= std::distance(pos, end());
+				while (first != last) {
+					push_back(*first++);
 				}
-				for (InputIterator it = first; it != last; ++it)
-					_alloc.construct(&(*it), *it);
-				_size += len;
+				iterator it = tmp.begin();
+				while (it != tmp.end()) {
+					push_back(*it++);
+				}
 			}
-			iterator erase (iterator pos) {
+			iterator erase(iterator pos) {
 				iterator it = begin();
 				while (it != pos)
 					++it;
@@ -251,7 +253,7 @@ namespace ft {
 				--_size;
 				return pos;
 			}
-			iterator erase (iterator first, iterator last) {
+			iterator erase(iterator first, iterator last) {
 				size_type len = std::distance(first, last);
 				pointer ret = first;
 				pointer pos = first;
@@ -264,7 +266,7 @@ namespace ft {
 				_size -= len;
 				return ret;
 			}
-			void swap (vector& x) {
+			void swap(vector& x) {
 				std::swap(this->_alloc, x._alloc);
 				std::swap(this->_ptr, x._ptr);
 				std::swap(this->_size, x._size);
@@ -331,7 +333,7 @@ namespace ft {
 
 	//std::swap (vector)
 	template <class T, class Alloc>
-	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) {
+	void swap(vector<T,Alloc>& x, vector<T,Alloc>& y) {
 		x.swap(y);
 	}
 }
