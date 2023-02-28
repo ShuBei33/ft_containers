@@ -6,14 +6,11 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:22 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/28 03:20:29 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/02/28 05:52:50 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#define HINT(what) std::cout << "\x1b[32m" << what << "\x1b[0m" << std::endl
-
-#include <vector>
 #include <stdexcept>
 #include <algorithm>
 #include "utils.hpp"
@@ -319,14 +316,15 @@ namespace ft {
 				_size = 0;
 			}
 
-			allocator_type get_allocator() const {
-				return _alloc;
-			}
-
 
 
 	//--------------------------------------- ALLOCATOR -----------------------------------------//
 
+
+
+			allocator_type get_allocator() const {
+				return _alloc;
+			}
 
 
 		private:
