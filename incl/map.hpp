@@ -6,7 +6,7 @@
 /*   By: estoffel <estoffel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 16:34:12 by estoffel          #+#    #+#             */
-/*   Updated: 2023/02/28 06:01:52 by estoffel         ###   ########.fr       */
+/*   Updated: 2023/03/03 01:06:27 by estoffel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ namespace ft {
 				
 			}
 
-			map (const map& x) {}
+			map(const map& x) {}
 
-			map& operator= (const map& x) {}
+			map& operator=(const map& x) {}
 
 			~map() {}
 
@@ -109,7 +109,7 @@ namespace ft {
 
 
 
-			mapped_type& operator[] (const key_type& k) {
+			mapped_type& operator[](const key_type& k) {
 				
 			}
 
@@ -119,32 +119,32 @@ namespace ft {
 
 
 
-			pair<iterator,bool> insert (const value_type& val) {
+			pair<iterator,bool> insert(const value_type& val) {
 				
 			}
 
-			iterator insert (iterator position, const value_type& val) {
+			iterator insert(iterator position, const value_type& val) {
 				
 			}
 
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last) {
+			void insert(InputIterator first, InputIterator last) {
 				
 			}
 
-			void erase (iterator position) {
+			void erase(iterator position) {
 				
 			}
 
-			size_type erase (const key_type& k) {
+			size_type erase(const key_type& k) {
 				
 			}
 
-			void erase (iterator first, iterator last) {
+			void erase(iterator first, iterator last) {
 				
 			}
 
-			void swap (map& x) {
+			void swap(map& x) {
 				
 			}
 			void clear() {
